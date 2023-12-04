@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:todo/screens/login.dart';
+import 'package:todo/screens/splash_screen.dart';
 
 
 
@@ -22,7 +22,7 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Todo App',
       theme: ThemeData(colorScheme: const ColorScheme.light(), fontFamily: 'Nunito'),
-      home: const Login(),
+      home: const SplashScreen(),
     );
   }
 }

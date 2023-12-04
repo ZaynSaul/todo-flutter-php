@@ -25,6 +25,15 @@ class _LoginState extends State<Login> {
   bool obserText = true;
 
   login() async {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return const Center(
+            child: CircularProgressIndicator(
+              color: AppColors.primaryColor,
+            ),
+          );
+        });
     if (formKey.currentState!.validate()) {
       http.Response response =
           await AuthServices.login(email.text, password.text);

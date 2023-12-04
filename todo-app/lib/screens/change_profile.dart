@@ -14,39 +14,37 @@ class _ChangeProfileState extends State<ChangeProfile> {
     return Scaffold(
       backgroundColor: AppColors.secondaryColor,
       appBar: AppBar(
-        
-        backgroundColor: const Color(0xfff5f6f8),
+        backgroundColor: AppColors.secondaryColor,
         iconTheme: const IconThemeData(
           color: AppColors.primaryColor,
         ),
         elevation: 0,
-        title: const Text("Chnage Password",
+        title: const Text("Upload Profile",
             style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
                 color: Colors.black87)),
         centerTitle: true,
       ),
-      
-      body: Container(
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+      body: Center(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
           Stack(
             children: [
               ClipRRect(
-                  borderRadius: BorderRadius.circular(50.0),
+                  borderRadius: BorderRadius.circular(100.0),
                   child: Image.asset(
                     "assets/images/profile.jpg",
-                    width: 100,
-                    height: 100,
-                    fit: BoxFit.cover,
+                    width: 200,
+                    height: 200,
+                    fit: BoxFit.fill,
                   )),
               Positioned(
-                bottom: -10,
-                left: 80,
+                bottom: -4,
+                right: 20,
                 child: IconButton(
                     onPressed: () {},
                     icon: const Icon(Icons.add_a_photo,
-                        color: Colors.black45, size: 24)),
+                        color: Colors.black45, size: 35)),
               ),
             ],
           )

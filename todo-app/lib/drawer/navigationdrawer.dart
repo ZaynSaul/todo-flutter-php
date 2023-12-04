@@ -118,11 +118,12 @@ class _DrawerNavigationState extends State<DrawerNavigation> {
               alignment: Alignment.bottomCenter,
               child: ListTile(
                 onTap: () {
-                  Navigator.push(
+                  Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
                       builder: (context) => const Login(),
                     ),
+                    (route) => false,
                   );
                   Fluttertoast.showToast(
                       msg: "You logged out successfully!!",
@@ -135,12 +136,12 @@ class _DrawerNavigationState extends State<DrawerNavigation> {
                   debugPrint("Logout");
                 },
                 leading: const Icon(
-                  Icons.lock_open,
-                  color: Colors.redAccent,
+                  Icons.logout_outlined,
+                  color: Colors.cyan,
                 ),
                 title: const Text(
                   'Logout',
-                  style: TextStyle(color: Colors.redAccent),
+                  style: TextStyle(color: Colors.cyan),
                 ),
               ),
             ),
