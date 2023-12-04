@@ -41,6 +41,15 @@ class _AddTodoItemState extends State<AddTodoItem> {
   final formKey = GlobalKey<FormState>();
   addTodo() async {
     if (formKey.currentState!.validate()) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return const Center(
+            child: CircularProgressIndicator(
+              color: AppColors.primaryColor,
+            ),
+          );
+        });
       http.Response response = await TodoItemServices.add(
           titleController.text, descriptionController.text, widget.todoId);
 

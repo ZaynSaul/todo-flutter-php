@@ -1,4 +1,4 @@
-import "dart:convert";
+
 import 'package:http/http.dart' as http;
 import 'package:todo/services/global_services.dart';
 
@@ -33,9 +33,8 @@ class TodoServices
       "title": title,
      };
 
-     var body = json.encode(data);
-     var url = Uri.parse("${baseURL}edit_todo.php");
-     http.Response response = await http.post(url, headers: headers, body: body);
+     var url = Uri.parse("${baseURL}update_todo.php");
+     http.Response response = await http.post(url, headers: headers, body: data);
 
      return response;
   }

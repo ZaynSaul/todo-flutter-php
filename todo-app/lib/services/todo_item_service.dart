@@ -26,12 +26,11 @@ class TodoItemServices {
   }
 
   static Future update(
-      String id, String title, String description, String todoId) async {
+      String id, String title, String description) async {
     var data = {
       "id": id,
       "title": title,
-      "description": description,
-      "todo_id": todoId
+      "description": description
     };
 
     var url = Uri.parse("${baseURL}update_todo_item.php");

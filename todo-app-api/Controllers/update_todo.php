@@ -5,7 +5,8 @@ header("Access-Control-Allow-Origin: *");
 $obj = new Server();
 
 $title = $_POST['title'];
-$id = (int)$_POST['id'];
+$id = $_POST['id'];
 
-$obj->connection()->query("UPDATE todo SET title='" . $title . "' WHERE id = '" . $id . "' ");
+$todo_id = (int)$id;
+$obj->connection()->query("UPDATE todo SET title='" .$title. "' WHERE id = '" .$todo_id. "' ");
 

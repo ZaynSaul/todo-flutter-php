@@ -47,11 +47,19 @@ class _UpdateTodoItemState extends State<UpdateTodoItem> {
   final formKey = GlobalKey<FormState>();
   updateTodo() async {
     if (formKey.currentState!.validate()) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return const Center(
+              child: CircularProgressIndicator(
+                color: AppColors.primaryColor,
+              ),
+            );
+          });
       http.Response response = await TodoItemServices.update(
-          widget.todoId,
+          widget.todoItemId,
           titleController.text,
-          descriptionController.text,
-          todoIdController.text);
+          descriptionController.text);
 
       if (response.statusCode == 200) {
         navigateToTodItems();

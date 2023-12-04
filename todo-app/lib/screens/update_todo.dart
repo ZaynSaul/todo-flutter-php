@@ -1,12 +1,9 @@
 // ignore_for_file: deprecated_member_use, use_build_context_synchronously, avoid_print, prefer_typing_uninitialized_variables, library_private_types_in_public_api
 
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:todo/screens/home.dart';
-
 import 'package:todo/services/global_services.dart';
 import 'package:todo/services/todo_service.dart';
 import 'package:todo/ui/app_colors.dart';
@@ -42,17 +39,29 @@ class _UpdateTodoState extends State<UpdateTodo> {
   TextEditingController todoIdController = TextEditingController();
   final formKey = GlobalKey<FormState>();
   addTodo() async {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return const Center(
+            child: CircularProgressIndicator(
+              color: AppColors.primaryColor,
+            ),
+          );
+        });
+        
     if (formKey.currentState!.validate()) {
       http.Response response =
           await TodoServices.update(widget.todoId, titleController.text);
-      var todoData = json.decode(response.body);
 
       if (response.statusCode == 200) {
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => HomeScreen(
-                name: widget.name, email: widget.email, password: widget.password, userId: widget.userId),
+                name: widget.name,
+                email: widget.email,
+                password: widget.password,
+                userId: widget.userId),
           ),
         );
 
@@ -64,7 +73,6 @@ class _UpdateTodoState extends State<UpdateTodo> {
             backgroundColor: Colors.green,
             textColor: Colors.white,
             fontSize: 20.0);
-        print(todoData);
       } else {
         errorSnackBar(context, "Something went wrong!");
       }
