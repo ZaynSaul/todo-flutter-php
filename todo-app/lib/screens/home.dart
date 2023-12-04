@@ -7,6 +7,7 @@ import 'package:todo/drawer/navigationdrawer.dart';
 import 'package:todo/services/todo_service.dart';
 import 'package:todo/ui/app_colors.dart';
 import 'package:todo/widgets/add_todo.dart';
+import 'package:todo/widgets/spinner_screen.dart';
 import 'package:todo/widgets/todo.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -27,11 +28,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late bool _isLoading = false;
   List todoListData = [];
   showAllTodos() async {
-
-    
-
     http.Response response = await TodoServices.view(widget.userId);
     if (response.statusCode == 200) {
       var jsonData = json.decode(response.body);
@@ -45,6 +44,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
+    _isLoading = true;
+    Future.delayed(const Duration(seconds: 2), () {
+      setState(() {
+        _isLoading = false;
+      });
+    });
     super.initState();
     showAllTodos();
   }
@@ -84,96 +89,127 @@ class _HomeScreenState extends State<HomeScreen> {
         password: widget.password,
         userId: widget.userId,
       ),
-      body: Stack(
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              searchBox(),
-              Container(
-                margin: const EdgeInsets.only(
-                  top: 20,
-                  bottom: 10,
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    const Expanded(
-                      child: Text(
-                        "All Lists",
-                        style: TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
+      body: _isLoading
+          ? const LoadingScreen()
+          : todoListData.isNotEmpty
+              ? Stack(
+                  children: [
                     Container(
-                      padding: const EdgeInsets.all(0),
-                      margin: const EdgeInsets.symmetric(vertical: 12),
-                      width: 40,
-                      height: 30,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: IconButton(
-                        onPressed: () {
-                          showDialog(
-                            context: (context),
-                            builder: (context) => AlertDialog(
-                              title: const Text('Message'),
-                              content: const Text(
-                                'Delete all Lists',
-                                style: TextStyle(
-                                  color: AppColors.primaryColor,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 15),
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            searchBox(),
+                            Container(
+                              margin: const EdgeInsets.only(
+                                top: 20,
+                                bottom: 10,
                               ),
-                              actions: <Widget>[
-                                cancel(),
-                                deleteConfirmation(),
-                              ],
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  const Expanded(
+                                    child: Text(
+                                      "All Lists",
+                                      style: TextStyle(
+                                        fontSize: 25,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.all(0),
+                                    margin: const EdgeInsets.symmetric(
+                                        vertical: 12),
+                                    width: 40,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    child: IconButton(
+                                      onPressed: () {
+                                        showDialog(
+                                          context: (context),
+                                          builder: (context) => AlertDialog(
+                                            title: const Text('Message'),
+                                            content: const Text(
+                                              'Delete all Lists',
+                                              style: TextStyle(
+                                                color: AppColors.primaryColor,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                            actions: <Widget>[
+                                              cancel(),
+                                              deleteConfirmation(),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                      color: Colors.black87,
+                                      icon: const Icon(Icons.more_horiz),
+                                      iconSize: 25,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          );
-                        },
-                        color: Colors.black87,
-                        icon: const Icon(Icons.more_horiz),
-                        iconSize: 25,
-                      ),
+                            Expanded(
+                              child: ListView.builder(
+                                  itemCount: todoListData.length,
+                                  itemBuilder: (context, index) {
+                                    return Todo(
+                                      id: todoListData[index]['id'],
+                                      title: todoListData[index]['title'],
+                                      isDone: todoListData[index]['is_done'],
+                                      name: widget.name,
+                                      email: widget.email,
+                                      password: widget.password,
+                                      userId: widget.userId,
+                                      index: index,
+                                    );
+                                  }),
+                            ),
+                          ]),
                     ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: ListView.builder(
-                    itemCount: todoListData.length,
-                    itemBuilder: (context, index) {
-                      return Todo(
-                        id: todoListData[index]['id'],
-                        title: todoListData[index]['title'],
-                        isDone: todoListData[index]['is_done'],
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: AddTodo(
                         name: widget.name,
                         email: widget.email,
                         password: widget.password,
                         userId: widget.userId,
-                        index: index,
-                      );
-                    }),
-              ),
-            ]),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: AddTodo(
-              name: widget.name,
-              email: widget.email,
-              password: widget.password,
-              userId: widget.userId,
-            ),
-          ),
-        ],
+                      ),
+                    ),
+                  ],
+                )
+              : noTask(),
+    );
+  }
+
+  Widget noTask() {
+    return Container(
+      padding: const EdgeInsets.all(0),
+      margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+                height: 300,
+                width: 300,
+                child: Image.asset(
+                  "assets/images/No_Task_List.png",
+                  fit: BoxFit.cover,
+                )),
+            const Text("No To Do Lists", style: TextStyle(fontSize: 20)),
+          ],
+        ),
       ),
     );
   }

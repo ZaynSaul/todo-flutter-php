@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:todo/ui/app_colors.dart';
 
-class MyWidget extends StatefulWidget {
-  const MyWidget({super.key});
+class LoadingScreen extends StatefulWidget {
+  const LoadingScreen({super.key});
 
   @override
-  State<MyWidget> createState() => _MyWidgetState();
+  State<LoadingScreen> createState() => _LoadingScreenState();
 }
 
-class _MyWidgetState extends State<MyWidget> {
+class _LoadingScreenState extends State<LoadingScreen> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Container(
+        child: const Center(
+      child: CircularProgressIndicator(color: AppColors.primaryColor),
+    ));
   }
 }

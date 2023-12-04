@@ -6,6 +6,7 @@ import 'package:todo/screens/add_todo_item.dart';
 import 'package:todo/screens/home.dart';
 import 'package:todo/services/todo_item_service.dart';
 import 'package:todo/ui/app_colors.dart';
+import 'package:todo/widgets/spinner_screen.dart';
 import 'package:todo/widgets/sub_todo_item.dart';
 
 class TodoList extends StatefulWidget {
@@ -31,6 +32,7 @@ class TodoList extends StatefulWidget {
 }
 
 class _TodoListState extends State<TodoList> {
+  late bool _isLoading = false;
   List todoItemListData = [];
   List countTodoItemListData = [];
   showAllTodoItems() async {
@@ -46,7 +48,8 @@ class _TodoListState extends State<TodoList> {
   }
 
   countTodoItems() async {
-    http.Response response = await TodoItemServices.countTodoItem(widget.todoId);
+    http.Response response =
+        await TodoItemServices.countTodoItem(widget.todoId);
     if (response.statusCode == 200) {
       var jsonData = json.decode(response.body);
       setState(() {
@@ -57,9 +60,14 @@ class _TodoListState extends State<TodoList> {
     }
   }
 
-
   @override
   void initState() {
+    _isLoading = true;
+    Future.delayed(const Duration(seconds: 2), () {
+      setState(() {
+        _isLoading = false;
+      });
+    });
     super.initState();
     showAllTodoItems();
     countTodoItems();
@@ -67,103 +75,101 @@ class _TodoListState extends State<TodoList> {
 
   @override
   Widget build(BuildContext context) {
-    if (todoItemListData.isNotEmpty) {
-      return Scaffold(
-        backgroundColor: AppColors.secondaryColor,
-        appBar: appBar(),
-        body: Stack(children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: <Widget>[
+    return Scaffold(
+      backgroundColor: AppColors.secondaryColor,
+      appBar: appBar(),
+      body: _isLoading
+          ? const LoadingScreen()
+          : todoItemListData.isNotEmpty
+              ? Stack(children: [
                   Container(
-                    margin: const EdgeInsets.only(
-                      top: 20,
-                      bottom: 10,
-                    ),
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Expanded(
-                          child: Text(
-                            "Completed(${countTodoItemListData.length})",
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w500,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: <Widget>[
+                          Container(
+                            margin: const EdgeInsets.only(
+                              top: 20,
+                              bottom: 10,
                             ),
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.all(0),
-                          margin: const EdgeInsets.only(top: 10, bottom: 20),
-                          width: 35,
-                          height: 35,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: IconButton(
-                            onPressed: () {
-                              showDialog(
-                                context: (context),
-                                builder: (context) => AlertDialog(
-                                  title: const Text('Message'),
-                                  content: const Text(
-                                    'Delete all completed todo items',
-                                    style: TextStyle(
-                                      color: AppColors.primaryColor,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600,
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Expanded(
+                                  child: Text(
+                                    "Completed(${countTodoItemListData.length})",
+                                    style: const TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w500,
                                     ),
                                   ),
-                                  actions: <Widget>[
-                                    cancel(),
-                                    deleteConfirmation(),
-                                  ],
                                 ),
-                              );
-                            },
-                            color: Colors.black87,
-                            icon: const Icon(Icons.more_horiz),
-                            iconSize: 30,
+                                Container(
+                                  padding: const EdgeInsets.all(0),
+                                  margin: const EdgeInsets.only(
+                                      top: 10, bottom: 20),
+                                  width: 35,
+                                  height: 35,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  child: IconButton(
+                                    onPressed: () {
+                                      showDialog(
+                                        context: (context),
+                                        builder: (context) => AlertDialog(
+                                          title: const Text('Message'),
+                                          content: const Text(
+                                            'Delete all completed todo items',
+                                            style: TextStyle(
+                                              color: AppColors.primaryColor,
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                          actions: <Widget>[
+                                            cancel(),
+                                            deleteConfirmation(),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                    color: Colors.black87,
+                                    icon: const Icon(Icons.more_horiz),
+                                    iconSize: 30,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
+                          Expanded(
+                            child: ListView.builder(
+                                itemCount: todoItemListData.length,
+                                itemBuilder: (context, index) {
+                                  return SubTodoItem(
+                                    id: todoItemListData[index]['id'],
+                                    title: todoItemListData[index]['title'],
+                                    description: todoItemListData[index]
+                                        ['description'],
+                                    isDone: todoItemListData[index]['is_done'],
+                                    name: widget.name,
+                                    email: widget.email,
+                                    password: widget.password,
+                                    userId: widget.userId,
+                                    todoId: widget.todoId,
+                                    todoTitle: widget.title,
+                                    index: index,
+                                  );
+                                }),
+                          ),
+                        ]),
                   ),
-                  Expanded(
-                    child: ListView.builder(
-                        itemCount: todoItemListData.length,
-                        itemBuilder: (context, index) {
-                          return SubTodoItem(
-                            id: todoItemListData[index]['id'],
-                            title: todoItemListData[index]['title'],
-                            description: todoItemListData[index]['description'],
-                            isDone: todoItemListData[index]['is_done'],
-                            name: widget.name,
-                            email: widget.email,
-                            password: widget.password,
-                            userId: widget.userId,
-                            todoId: widget.todoId,
-                            todoTitle: widget.title,
-                            index: index,
-                          );
-                        }),
-                  ),
-                ]),
-          ),
-        ]),
-        floatingActionButton: floatingButtion(),
-      );
-    } else {
-      return Scaffold(
-        backgroundColor: AppColors.secondaryColor,
-        appBar: appBar(),
-        body: noTask(),
-        floatingActionButton: floatingButtion(),
-      );
-    }
+                ])
+              : noTask(),
+      floatingActionButton: floatingButtion(),
+    );
   }
 
   Widget floatingButtion() {
@@ -174,6 +180,28 @@ class _TodoListState extends State<TodoList> {
         Icons.add,
         color: Colors.white,
         size: 30,
+      ),
+    );
+  }
+
+  Widget noTask() {
+    return Container(
+      padding: const EdgeInsets.all(0),
+      margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+                height: 300,
+                width: 300,
+                child: Image.asset(
+                  "assets/images/goals.png",
+                  fit: BoxFit.cover,
+                )),
+            const Text("No To Do item", style: TextStyle(fontSize: 20)),
+          ],
+        ),
       ),
     );
   }
@@ -223,28 +251,6 @@ class _TodoListState extends State<TodoList> {
       child: const Text(
         "Yes, delete",
         style: TextStyle(color: Colors.white, fontSize: 16),
-      ),
-    );
-  }
-
-  Widget noTask() {
-    return Container(
-      padding: const EdgeInsets.all(0),
-      margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-                height: 300,
-                width: 300,
-                child: Image.asset(
-                  "assets/images/goals.png",
-                  fit: BoxFit.cover,
-                )),
-            const Text("No To Do item", style: TextStyle(fontSize: 20)),
-          ],
-        ),
       ),
     );
   }
