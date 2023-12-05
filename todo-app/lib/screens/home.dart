@@ -73,6 +73,13 @@ class _HomeScreenState extends State<HomeScreen> {
           Container(
               height: 40,
               width: 40,
+              decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.grey,
+                    width: 1,
+                    style: BorderStyle.solid
+                  ),
+                  borderRadius: BorderRadius.circular(25.00)),
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(25.0),
                   child: Image.asset(

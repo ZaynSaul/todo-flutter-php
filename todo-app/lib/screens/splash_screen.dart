@@ -31,20 +31,20 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Container(
-      width: double.infinity,
-      height: double.infinity,
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage("assets/images/home_screen.jpeg"),
-          fit: BoxFit.cover,
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/splash_screen.png"),
+            fit: BoxFit.cover,
+          ),
         ),
-      ),
-      child: const Center(
-        child: CircularProgressIndicator(
-          color: AppColors.primaryColor,
+        child: const Center(
+          child: CircularProgressIndicator(
+            color: AppColors.primaryColor,
+          ),
         ),
-      ),
     ));
   }
 }

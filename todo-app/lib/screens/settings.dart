@@ -61,7 +61,7 @@ class _SettingsState extends State<Settings> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            const ProfileCard(),
+             ProfileCard(name: widget.name),
             const SizedBox(
               height: 20,
             ),

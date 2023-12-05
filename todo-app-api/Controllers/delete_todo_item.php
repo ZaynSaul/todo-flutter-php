@@ -3,9 +3,12 @@ require_once '../Config/server.php';
 
 header("Access-Control-Allow-Origin: *");
 
-$obj = new Server();
+try {
+    $obj = new Server();
 
-$id = (int)$_POST['id'];
+    $id = (int)$_POST['id'];
 
-$obj->connection()->query("DELETE FROM todo_item  WHERE id = '".$id."' ");
-
+    $obj->connection()->query("DELETE FROM todo_item  WHERE id = '" .$id. "' ");
+} catch (Exception $e) {
+    echo json_encode("FAILED");
+}
