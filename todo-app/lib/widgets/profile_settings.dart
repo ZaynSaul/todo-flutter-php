@@ -2,9 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:todo/screens/change_profile.dart';
 import 'package:todo/ui/app_colors.dart';
 
-class ProfileSettings extends StatelessWidget {
-  const ProfileSettings({super.key});
+class ProfileSettings extends StatefulWidget {
+  
+  final String name;
+  final String email;
+  final String password;
+  final String userId;
+  final index;
+  const ProfileSettings(
+      {super.key,
+      
+      required this.name,
+      required this.email,
+      required this.password,
+      required this.userId,
+      this.index});
+  @override
+  State<ProfileSettings> createState() => _ProfileSettingsState();
+}
 
+class _ProfileSettingsState extends State<ProfileSettings> {
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -12,8 +29,16 @@ class ProfileSettings extends StatelessWidget {
         color: AppColors.whiteColor,
         child: ListTile(
           onTap: () {
-            Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const ChangeProfile()));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ChangeProfile(
+                        // todoId: widget.todoId,
+                        // title: widget.title,
+                        name: widget.name,
+                        email: widget.email,
+                        password: widget.password,
+                        userId: widget.userId)));
           },
           leading: const Icon(
             Icons.person,

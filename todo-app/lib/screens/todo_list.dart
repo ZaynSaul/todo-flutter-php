@@ -1,7 +1,7 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
 import 'package:todo/screens/add_todo_item.dart';
 import 'package:todo/screens/home.dart';
 import 'package:todo/services/todo_item_service.dart';
@@ -175,13 +175,56 @@ class _TodoListState extends State<TodoList> {
   Widget floatingButtion() {
     return FloatingActionButton(
       backgroundColor: AppColors.primaryColor,
-      onPressed: navigateToAddTodo,
+      onPressed: () {
+        showAddNewListItem(context);
+      },
       child: const Icon(
         Icons.add,
         color: Colors.white,
         size: 30,
       ),
     );
+  }
+
+  void showAddNewListItem(BuildContext context) {
+    showModalBottomSheet(
+        backgroundColor: Colors.transparent,
+        context: context,
+        isScrollControlled: true,
+        builder: (bulder) {
+          return Container(
+            padding: EdgeInsets.only(
+                top: 20,
+                left: 20,
+                right: 20,
+                bottom: MediaQuery.of(context).viewInsets.bottom),
+            decoration: const BoxDecoration(
+                color: AppColors.secondaryColor,
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    topRight: Radius.circular(10))),
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height / 2,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text("Add new list Item",
+                      style: TextStyle(color: Colors.black45, fontSize: 20)),
+                  const SizedBox(height: 20),
+                  AddTodoItem(
+                      todoId: widget.todoId,
+                      todoTitle: widget.title,
+                      name: widget.name,
+                      email: widget.email,
+                      password: widget.password,
+                      userId: widget.userId),
+                ],
+              ),
+            ),
+          );
+        });
   }
 
   Widget noTask() {

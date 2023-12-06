@@ -39,17 +39,8 @@ class _AddTodoItemState extends State<AddTodoItem> {
   TextEditingController descriptionController = TextEditingController();
   TextEditingController todoIdController = TextEditingController();
   final formKey = GlobalKey<FormState>();
-  addTodo() async {
+  addTodoItem() async {
     if (formKey.currentState!.validate()) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return const Center(
-            child: CircularProgressIndicator(
-              color: AppColors.primaryColor,
-            ),
-          );
-        });
       http.Response response = await TodoItemServices.add(
           titleController.text, descriptionController.text, widget.todoId);
 
@@ -81,130 +72,91 @@ class _AddTodoItemState extends State<AddTodoItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.secondaryColor,
-      appBar: AppBar(
-        leading: ElevatedButton(
-          onPressed: () => navigateToAddTodoItem(),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.secondaryColor,
-            minimumSize: const Size(40, 40),
-            elevation: 0,
-          ),
-          child: const Icon(
-            Icons.arrow_back,
-            color: AppColors.primaryColor,
-            size: 25,
-          ),
-        ),
-        backgroundColor: AppColors.secondaryColor,
-        iconTheme: const IconThemeData(
-          color: AppColors.primaryColor,
-        ),
-        elevation: 0,
-        title: Text(editMode ? "Edit Todo" : "Add Todo",
-            style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87)),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        child: Form(
-          key: formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const Padding(
-                padding: EdgeInsets.all(8.0),
+    return Form(
+      key: formKey,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8.0),
+            margin: const EdgeInsets.only(
+              bottom: 15,
+            ),
+            decoration: BoxDecoration(
+              color: AppColors.whiteColor,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: TextFormField(
+              controller: titleController,
+              keyboardType: TextInputType.text,
+              decoration: const InputDecoration(
+                filled: true,
+                fillColor: AppColors.whiteColor,
+                border: InputBorder.none,
+                hintText: "Enter title",
+                hintStyle: TextStyle(color: Colors.grey),
               ),
-              Container(
-                padding: const EdgeInsets.all(8.0),
-                margin: const EdgeInsets.only(
-                  right: 10,
-                  left: 10,
-                  bottom: 15,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.whiteColor,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: TextFormField(
-                  controller: titleController,
-                  keyboardType: TextInputType.text,
-                  decoration: const InputDecoration(
-                    filled: true,
-                    fillColor: AppColors.whiteColor,
-                    border: InputBorder.none,
-                    hintText: "Enter title",
-                    hintStyle: TextStyle(color: Colors.grey),
-                  ),
-                  textInputAction: TextInputAction.next,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Title filed is required';
-                    }
+              textInputAction: TextInputAction.next,
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return 'Title filed is required';
+                }
 
-                    return null;
-                  },
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.all(8.0),
-                margin: const EdgeInsets.only(
-                  right: 10,
-                  left: 10,
-                  bottom: 15,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.whiteColor,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: TextFormField(
-                  controller: descriptionController,
-                  maxLines: 3,
-                  maxLength: 200,
-                  keyboardType: TextInputType.multiline,
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    hintText: "Description area",
-                    hintStyle: TextStyle(color: Colors.grey),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return "Description field is required";
-                    }
-                    if (value.trim().length < 5) {
-                      return 'Description must be at least 10 characters in length';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  height: 60,
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        primary: AppColors.primaryColor,
-                        padding: const EdgeInsets.all(20.0),
-                        textStyle: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        )),
-                    onPressed: addTodo,
-                    child: Text(
-                      editMode ? "Update Data" : "Add Data",
-                      style: const TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                  ),
-                ),
-              ),
-            ],
+                return null;
+              },
+            ),
           ),
-        ),
+          Container(
+            padding: const EdgeInsets.all(8.0),
+            margin: const EdgeInsets.only(
+              bottom: 15,
+            ),
+            decoration: BoxDecoration(
+              color: AppColors.whiteColor,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: TextFormField(
+              controller: descriptionController,
+              maxLines: 3,
+              maxLength: 200,
+              keyboardType: TextInputType.multiline,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                hintText: "Description area",
+                hintStyle: TextStyle(color: Colors.grey),
+              ),
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return "Description field is required";
+                }
+                if (value.trim().length < 5) {
+                  return 'Description must be at least 10 characters in length';
+                }
+                return null;
+              },
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.only(
+              top: 20,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                InkWell(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text("Cancel",
+                        style: TextStyle(color: Colors.red, fontSize: 18))),
+                InkWell(
+                    onTap: addTodoItem,
+                    child: const Text("Save",
+                        style: TextStyle(color: Colors.black45, fontSize: 18))),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

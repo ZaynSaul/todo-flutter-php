@@ -8,14 +8,14 @@ import 'package:todo/services/global_services.dart';
 import 'package:todo/services/todo_service.dart';
 import 'package:todo/ui/app_colors.dart';
 
-class AddTodo extends StatefulWidget {
+class UpdateName extends StatefulWidget {
   final String name;
   final String email;
   final String password;
   final String userId;
   final index;
 
-  const AddTodo(
+  const UpdateName(
       {super.key,
       required this.name,
       required this.email,
@@ -24,16 +24,16 @@ class AddTodo extends StatefulWidget {
       this.index});
 
   @override
-  _AddTodoState createState() => _AddTodoState();
+  _UpdateNameState createState() => _UpdateNameState();
 }
 
-class _AddTodoState extends State<AddTodo> {
+class _UpdateNameState extends State<UpdateName> {
   bool editMode = false;
   TextEditingController titleController = TextEditingController();
   TextEditingController userIdController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
-  addTodo() async {
+  update() async {
     if (formKey.currentState!.validate()) {
       
       http.Response response =
@@ -114,7 +114,7 @@ class _AddTodoState extends State<AddTodo> {
               top: 20,
             ),
             child:Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
               InkWell(
                   onTap: () {
@@ -122,8 +122,9 @@ class _AddTodoState extends State<AddTodo> {
                   },
                   child: const Text("Cancel",
                       style: TextStyle(color: Colors.red, fontSize: 18))),
+              const SizedBox(width: 20,),
               InkWell(
-                  onTap: addTodo,
+                  onTap: update,
                   child: const Text("Save",
                       style: TextStyle(color: Colors.black45, fontSize: 18))),
             ],

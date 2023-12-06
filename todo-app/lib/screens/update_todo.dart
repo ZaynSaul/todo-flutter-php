@@ -39,15 +39,6 @@ class _UpdateTodoState extends State<UpdateTodo> {
   TextEditingController todoIdController = TextEditingController();
   final formKey = GlobalKey<FormState>();
   addTodo() async {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return const Center(
-            child: CircularProgressIndicator(
-              color: AppColors.primaryColor,
-            ),
-          );
-        });
         
     if (formKey.currentState!.validate()) {
       http.Response response =

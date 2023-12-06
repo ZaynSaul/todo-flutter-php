@@ -61,7 +61,7 @@ class _SettingsState extends State<Settings> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-             ProfileCard(name: widget.name),
+            ProfileCard(name: widget.name),
             const SizedBox(
               height: 20,
             ),
@@ -75,7 +75,11 @@ class _SettingsState extends State<Settings> {
             Expanded(
               child: ListView(
                 children: [
-                  const ProfileSettings(),
+                  ProfileSettings(
+                      name: widget.name,
+                      email: widget.email,
+                      password: widget.password,
+                      userId: widget.userId),
                   const SizedBox(height: 20),
                   PasswordSettings(
                       email: widget.email, password: widget.password),

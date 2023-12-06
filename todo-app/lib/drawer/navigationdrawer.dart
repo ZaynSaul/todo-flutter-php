@@ -74,7 +74,7 @@ class _DrawerNavigationState extends State<DrawerNavigation> {
             ListTile(
               textColor: AppColors.primaryColor,
               leading: const Icon(
-                Icons.history,
+                Icons.error_outline_rounded,
                 color: AppColors.primaryColor,
               ),
               title: const Text(

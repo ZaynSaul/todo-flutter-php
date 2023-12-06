@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:todo/drawer/navigationdrawer.dart';
+import 'package:todo/screens/settings.dart';
 import 'package:todo/services/todo_service.dart';
 import 'package:todo/ui/app_colors.dart';
 import 'package:todo/widgets/add_todo.dart';
@@ -28,6 +29,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  bool _showSearch = false;
   late bool _isLoading = false;
   List todoListData = [];
   showAllTodos() async {
@@ -50,6 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
         _isLoading = false;
       });
     });
+    _showSearch = false;
     super.initState();
     showAllTodos();
   }
@@ -70,22 +73,71 @@ class _HomeScreenState extends State<HomeScreen> {
               fontSize: 24,
             ),
           ),
-          Container(
-              height: 40,
-              width: 40,
-              decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.grey,
-                    width: 1,
-                    style: BorderStyle.solid
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                height: 40,
+                width: 40,
+                decoration: BoxDecoration(
+                    color: AppColors.whiteColor,
+                    borderRadius: BorderRadius.circular(20.00)),
+                child: Center(
+                  child: GestureDetector(
+                      onTap: () {},
+                      child: Badge.count(
+                          count: 3,
+                          backgroundColor: Colors.red,
+                          child: const Icon(Icons.notifications,
+                              color: AppColors.primaryColor, size: 24))),
+                ),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              Container(
+                height: 40,
+                width: 40,
+                decoration: BoxDecoration(
+                    color: AppColors.whiteColor,
+                    borderRadius: BorderRadius.circular(20.00)),
+                child: Center(
+                    child: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _showSearch = true;
+                          });
+                        },
+                        icon: const Icon(Icons.search_rounded,
+                            color: Colors.grey, size: 24))),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              GestureDetector(
+                onTap: () {
+                  profileSettings();
+                },
+                child: Container(
+                  height: 40,
+                  width: 40,
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                          color: Colors.grey,
+                          width: 1,
+                          style: BorderStyle.solid),
+                      borderRadius: BorderRadius.circular(25.00)),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(25.0),
+                    child: Image.asset(
+                      "assets/images/profile.jpg",
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                  borderRadius: BorderRadius.circular(25.00)),
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(25.0),
-                  child: Image.asset(
-                    "assets/images/profile.jpg",
-                    fit: BoxFit.cover,
-                  ))),
+                ),
+              ),
+            ],
+          ),
         ]),
         centerTitle: true,
         elevation: 0,
@@ -110,7 +162,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             searchBox(),
                             Container(
                               margin: const EdgeInsets.only(
-                                top: 20,
+                                top: 10,
                                 bottom: 10,
                               ),
                               padding:
@@ -184,19 +236,65 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ]),
                     ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: AddTodo(
-                        name: widget.name,
-                        email: widget.email,
-                        password: widget.password,
-                        userId: widget.userId,
-                      ),
-                    ),
                   ],
                 )
               : noTask(),
+      floatingActionButton: floatingButtion(),
     );
+  }
+
+  Widget floatingButtion() {
+    return FloatingActionButton(
+      backgroundColor: AppColors.primaryColor,
+      onPressed: () {
+        showAddNewList(context);
+      },
+      child: const Icon(
+        Icons.add,
+        color: Colors.white,
+        size: 30,
+      ),
+    );
+  }
+
+  void showAddNewList(BuildContext context) {
+    showModalBottomSheet(
+        backgroundColor: Colors.transparent,
+        context: context,
+        isScrollControlled: true,
+        builder: (bulder) {
+          return Container(
+            padding: EdgeInsets.only(
+                top: 20,
+                left: 20,
+                right: 20,
+                bottom: MediaQuery.of(context).viewInsets.bottom),
+            decoration: const BoxDecoration(
+                color: AppColors.secondaryColor,
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    topRight: Radius.circular(10))),
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height / 4,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text("Add new list",
+                      style: TextStyle(color: Colors.black45, fontSize: 20)),
+                  const SizedBox(height: 20),
+                  AddTodo(
+                    name: widget.name,
+                    email: widget.email,
+                    password: widget.password,
+                    userId: widget.userId,
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
   }
 
   Widget noTask() {
@@ -222,28 +320,43 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget searchBox() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
-      decoration: BoxDecoration(
-        color: AppColors.whiteColor,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: const TextField(
-        decoration: InputDecoration(
-            contentPadding: EdgeInsets.all(8),
-            prefixIcon: Icon(
+    if (_showSearch == true) {
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        decoration: BoxDecoration(
+          color: AppColors.whiteColor,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: TextField(
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            hintText: "Search",
+            hintStyle: const TextStyle(
+              color: Colors.grey,
+            ),
+            prefixIcon: const Icon(
               Icons.search,
               color: AppColors.primaryColor,
               size: 20,
             ),
-            prefixIconConstraints: BoxConstraints(maxHeight: 20, minWidth: 25),
-            border: InputBorder.none,
-            hintText: "Search",
-            hintStyle: TextStyle(
-              color: Colors.grey,
-            )),
-      ),
-    );
+            suffixIcon: IconButton(
+              onPressed: () {
+                setState(() {
+                  _showSearch = false;
+                });
+              },
+              icon: const Icon(
+                Icons.cancel,
+                color: Colors.red,
+                size: 20,
+              ),
+            ),
+          ),
+        ),
+      );
+    } else {
+      return Container();
+    }
   }
 
   Widget cancel() {
@@ -281,5 +394,16 @@ class _HomeScreenState extends State<HomeScreen> {
         style: TextStyle(color: Colors.white, fontSize: 16),
       ),
     );
+  }
+
+  void profileSettings() {
+    final route = MaterialPageRoute(
+      builder: (context) => Settings(
+          name: widget.name,
+          email: widget.email,
+          password: widget.password,
+          userId: widget.userId),
+    );
+    Navigator.push(context, route);
   }
 }
