@@ -40,11 +40,11 @@ class Todo extends StatefulWidget {
 
 class _TodoState extends State<Todo> {
   delete(String id) async {
-    http.Response response = await TodoServices.delete(id);
+    http.Response response = await TodoServices.deleteList(id);
 
     if (response.statusCode == 200) {
-      navigateToTodoList();
-      showSuccessMessage(context, "Todo item deleted successfully");
+      navigateToTodoHome();
+      showSuccessMessage(context, "Todo list deleted successfully");
     } else {
       errorSnackBar(context, "Something went wrong!");
     }
@@ -54,6 +54,7 @@ class _TodoState extends State<Todo> {
     http.Response response = await TodoServices.doneTodo(widget.id, isDone);
 
     if (response.statusCode == 200) {
+      navigateToTodoHome();
       if (isDone == "1") {
         showSuccessMessage(context, "Todo item is completed successfully");
       } else {
@@ -97,7 +98,7 @@ class _TodoState extends State<Todo> {
             }),
             children: [
               SlidableAction(
-                onPressed: (context) => _onDismissed(),
+                onPressed: (context) => deleteComfirmationModal(),
                 backgroundColor: const Color(0xFFFE4A49),
                 foregroundColor: Colors.white,
                 icon: Icons.delete,
@@ -105,6 +106,7 @@ class _TodoState extends State<Todo> {
             ],
           ),
           child: ListTile(
+            onTap: () => viewListItem(),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(0),
             ),
@@ -186,7 +188,7 @@ class _TodoState extends State<Todo> {
     Navigator.push(context, route);
   }
 
-  void navigateToTodoList() {
+  void navigateToTodoHome() {
     final route = MaterialPageRoute(
         builder: (context) => HomeScreen(
             name: widget.name,
@@ -195,5 +197,63 @@ class _TodoState extends State<Todo> {
             profile: widget.profile,
             userId: widget.userId));
     Navigator.push(context, route);
+  }
+
+  void deleteComfirmationModal() {
+    showDialog(
+      context: (context),
+      builder: (context) => AlertDialog(
+        title: const Text('Message'),
+        content: const Text(
+          'Delete todo list',
+          style: TextStyle(
+            color: AppColors.primaryColor,
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        actions: <Widget>[
+          cancel(),
+          deleteConfirmation(),
+        ],
+      ),
+    );
+  }
+
+  Widget cancel() {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.red,
+          padding: const EdgeInsets.all(10.0),
+          textStyle: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          )),
+      onPressed: () {
+        Navigator.pop(context);
+        setState(() {});
+      },
+      child: const Text(
+        "Cancel",
+        style: TextStyle(color: Colors.white, fontSize: 16),
+      ),
+    );
+  }
+
+  Widget deleteConfirmation() {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.green,
+          padding: const EdgeInsets.all(10.0),
+          textStyle: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          )),
+      onPressed: () => _onDismissed(),
+      child: const Text(
+        "Yes, delete",
+        style: TextStyle(color: Colors.white, fontSize: 16),
+      ),
+    );
   }
 }

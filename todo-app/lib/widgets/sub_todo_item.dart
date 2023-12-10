@@ -50,7 +50,7 @@ class _SubTodoItemState extends State<SubTodoItem> {
     if (response.statusCode == 200) {
       navigateToTodoItem();
       showSuccessMessage(context, "Todo item deleted successfully");
-    }else{
+    } else {
       errorSnackBar(context, "Something went wrong!");
     }
   }
@@ -65,7 +65,7 @@ class _SubTodoItemState extends State<SubTodoItem> {
       } else {
         showCancelMessage(context, "Todo item not completed");
       }
-    }else{
+    } else {
       errorSnackBar(context, "Something went wrong!");
     }
   }
@@ -81,11 +81,6 @@ class _SubTodoItemState extends State<SubTodoItem> {
         startActionPane: ActionPane(
           // A motion is a widget used to control how the pane animates.
           motion: const StretchMotion(),
-
-          // A pane can dismiss the Slidable.
-          
-
-          // All actions are defined in the children parameter.
           children: [
             SlidableAction(
               onPressed: (context) => editTodoItem(),
@@ -97,25 +92,27 @@ class _SubTodoItemState extends State<SubTodoItem> {
         ),
         endActionPane: ActionPane(
           motion: const BehindMotion(),
-          dismissible: DismissiblePane(onDismissed: () {
-            delete(widget.id);
-          }),
+          dismissible: DismissiblePane(
+            onDismissed: () {
+              delete(widget.id);
+            },
+          ),
           children: [
             SlidableAction(
-              onPressed: (context) => _onDismissed(),
+              onPressed: (context) => deleteComfirmationModal(),
               backgroundColor: const Color(0xFFFE4A49),
               foregroundColor: Colors.white,
               icon: Icons.delete,
             ),
           ],
         ),
-        child: ListTile(
         
+        child: ListTile(
           tileColor: AppColors.whiteColor,
           leading: Container(
             padding: const EdgeInsets.all(0),
             width: 30,
-          height: 30,
+            height: 30,
             child: IconButton(
               onPressed: () {
                 if (widget.isDone == "1") {
@@ -127,7 +124,9 @@ class _SubTodoItemState extends State<SubTodoItem> {
               color: AppColors.primaryColor,
               icon: widget.isDone == "1"
                   ? const Icon(Icons.circle_rounded)
-                  : const Icon(Icons.circle_outlined, ),
+                  : const Icon(
+                      Icons.circle_outlined,
+                    ),
               iconSize: 20,
             ),
           ),
@@ -172,7 +171,7 @@ class _SubTodoItemState extends State<SubTodoItem> {
           name: widget.name,
           email: widget.email,
           password: widget.password,
-           profile: widget.profile,
+          profile: widget.profile,
           userId: widget.userId),
     );
     Navigator.push(context, route);
@@ -190,11 +189,67 @@ class _SubTodoItemState extends State<SubTodoItem> {
             name: widget.name,
             email: widget.email,
             password: widget.password,
-             profile: widget.profile,
+            profile: widget.profile,
             userId: widget.userId,
             index: widget.index));
     Navigator.push(context, route);
   }
 
- 
+  void deleteComfirmationModal() {
+    showDialog(
+      context: (context),
+      builder: (context) => AlertDialog(
+        title: const Text('Message'),
+        content: const Text(
+          'Delete todo item',
+          style: TextStyle(
+            color: AppColors.primaryColor,
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        actions: <Widget>[
+          cancel(),
+          deleteConfirmation(),
+        ],
+      ),
+    );
+  }
+
+  Widget cancel() {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.red,
+          padding: const EdgeInsets.all(10.0),
+          textStyle: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          )),
+      onPressed: () {
+        Navigator.pop(context);
+        setState(() {});
+      },
+      child: const Text(
+        "Cancel",
+        style: TextStyle(color: Colors.white, fontSize: 16),
+      ),
+    );
+  }
+
+  Widget deleteConfirmation() {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.green,
+          padding: const EdgeInsets.all(10.0),
+          textStyle: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          )),
+      onPressed: () => _onDismissed(),
+      child: const Text(
+        "Yes, delete",
+        style: TextStyle(color: Colors.white, fontSize: 16),
+      ),
+    );
+  }
 }

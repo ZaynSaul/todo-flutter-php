@@ -39,12 +39,12 @@ class TodoServices
      return response;
   }
 
-  static Future delete (String id) async {
+  static Future deleteList (String id) async {
      var data = {
       "id": id
      };
 
-     var url = Uri.parse("${baseURL}delete_lists.php");
+     var url = Uri.parse("${baseURL}delete_list.php");
      http.Response response = await http.post(url, body: data);
 
      return response;

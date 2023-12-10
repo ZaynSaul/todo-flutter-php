@@ -1,9 +1,12 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:todo/screens/add_todo_item.dart';
 import 'package:todo/screens/home.dart';
+import 'package:todo/services/global_services.dart';
 import 'package:todo/services/todo_item_service.dart';
 import 'package:todo/ui/app_colors.dart';
 import 'package:todo/widgets/spinner_screen.dart';
@@ -46,6 +49,25 @@ class _TodoListState extends State<TodoList> {
       });
 
       return jsonData;
+    }
+  }
+
+  delete(String id) async {
+    http.Response response = await TodoItemServices.deleteCompleted(id);
+
+    if (response.statusCode == 200) {
+      var todoItemData = json.decode(response.body);
+      if(todoItemData == "ERROR"){
+        errorSnackBar(context, "Failed to delete try again!");
+      }
+      Navigator.of(context).pop(context);
+      showSuccessMessage(context, "Todo items deleted successfully");
+      setState(() {
+        showAllTodoItems();
+        countTodoItems();
+      });
+    } else {
+      errorSnackBar(context, "Something went wrong!");
     }
   }
 
@@ -295,7 +317,7 @@ class _TodoListState extends State<TodoList> {
             fontSize: 16,
             fontWeight: FontWeight.w500,
           )),
-      onPressed: () {},
+      onPressed: () => delete(widget.todoId),
       child: const Text(
         "Yes, delete",
         style: TextStyle(color: Colors.white, fontSize: 16),

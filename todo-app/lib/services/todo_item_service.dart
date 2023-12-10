@@ -48,6 +48,15 @@ class TodoItemServices {
     return response;
   }
 
+  static Future deleteCompleted(String id) async {
+    var data = {"id": id};
+
+    var url = Uri.parse("${baseURL}delete_completed.php");
+    http.Response response = await http.post(url, body: data);
+
+    return response;
+  }
+
   static Future doneTodo(String id, String isDone) async {
     var data = {"id": id, "is_done": isDone};
 
@@ -67,4 +76,6 @@ class TodoItemServices {
 
     return response;
   }
+
+
 }
