@@ -1,12 +1,12 @@
 import "package:flutter/material.dart";
 import "package:todo/ui/app_colors.dart";
 
-var baseURL = "http://192.168.137.182/todo-app-api/Controllers/";
-// const String baseURL = "http://192.168.100.6/todo-app-api/Controllers/";
-var headers = {"Accept" : "application/json"};
+var baseURL = "http://192.168.137.55/todo-app-api/Controllers/";
+var profileBaseURL = "http://192.168.137.55/todo-app-api/uploads/";
+// const String baseURL = "http://192.168.100.5/todo-app-api/Controllers/";
+var headers = {"Accept": "application/json"};
 
-errorSnackBar(BuildContext context, String message)
-{
+errorSnackBar(BuildContext context, String message) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
     backgroundColor: Colors.red,
     content: Text(message, style: const TextStyle(color: AppColors.whiteColor)),
@@ -14,8 +14,7 @@ errorSnackBar(BuildContext context, String message)
   ));
 }
 
-showSuccessMessage(BuildContext context, String message)
-{
+showSuccessMessage(BuildContext context, String message) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
     backgroundColor: Colors.green,
     content: Text(message, style: const TextStyle(color: AppColors.whiteColor)),
@@ -23,8 +22,7 @@ showSuccessMessage(BuildContext context, String message)
   ));
 }
 
-showCancelMessage(BuildContext context, String message)
-{
+showCancelMessage(BuildContext context, String message) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
     backgroundColor: Colors.orange,
     content: Text(message, style: const TextStyle(color: AppColors.whiteColor)),

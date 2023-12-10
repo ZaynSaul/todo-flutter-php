@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:todo/screens/login.dart';
 import 'package:todo/screens/settings.dart';
+import 'package:todo/services/global_services.dart';
 import 'package:todo/ui/app_colors.dart';
 
 class DrawerNavigation extends StatefulWidget {
   final String name;
   final String email;
   final String password;
+  final String profile;
   final String userId;
 
   const DrawerNavigation(
@@ -17,6 +19,7 @@ class DrawerNavigation extends StatefulWidget {
       required this.name,
       required this.email,
       required this.password,
+      required this.profile,
       required this.userId});
   @override
   _DrawerNavigationState createState() => _DrawerNavigationState();
@@ -37,9 +40,16 @@ class _DrawerNavigationState extends State<DrawerNavigation> {
                     height: 100,
                     width: 100,
                     child: ClipRRect(
-                        borderRadius: BorderRadius.circular(60.0),
-                        child: Image.asset(
+                        borderRadius: BorderRadius.circular(35.0),
+                        child: widget.profile.isEmpty
+                      ? Image.asset(
                           "assets/images/profile.jpg",
+                          fit: BoxFit.cover,
+                        )
+                      : Image.network(
+                          profileBaseURL + widget.profile,
+                          width: 50,
+                          height: 50,
                           fit: BoxFit.cover,
                         ))),
               ),
@@ -110,6 +120,7 @@ class _DrawerNavigationState extends State<DrawerNavigation> {
                             name: widget.name,
                             email: widget.email,
                             password: widget.password,
+                            profile: widget.profile,
                             userId: widget.userId)));
                 print("Setting page");
               },

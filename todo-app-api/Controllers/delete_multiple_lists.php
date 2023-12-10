@@ -6,10 +6,10 @@ header("Access-Control-Allow-Origin: *");
 try {
     $obj = new Server();
 
-    $deleteId = $_POST['id'];
+    foreach ($_POST['id'] as $deleteId) {
 
-    $obj->connection()->query("DELETE FROM todo  WHERE id = '" . (int)$deleteId . "' ");
-
+        $obj->connection()->query("DELETE FROM todo  WHERE id = '" . (int)$deleteId . "' ");
+    }
 
     foreach ($_POST['id'] as $deleteItemId) {
         $obj->connection()->query("DELETE FROM todo_item  WHERE todo_id = '" . (int)$deleteItemId . "' ");

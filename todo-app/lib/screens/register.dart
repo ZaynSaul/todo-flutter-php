@@ -5,7 +5,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
-
 import 'package:todo/screens/home.dart';
 import 'package:todo/screens/login.dart';
 import 'package:todo/services/auth_service.dart';
@@ -46,6 +45,7 @@ class _RegisterState extends State<Register> {
                   name: userData['name'],
                   email: userData['email'],
                   password: userData['password'],
+                   profile: userData['profile'],
                   userId: userData['id']),
             ),
           );
@@ -70,10 +70,10 @@ class _RegisterState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primaryColor,
+      backgroundColor: AppColors.secondaryColor,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: AppColors.primaryColor,
+        backgroundColor: AppColors.secondaryColor,
         iconTheme: const IconThemeData(color: AppColors.whiteColor),
         elevation: 0,
       ),
@@ -84,11 +84,11 @@ class _RegisterState extends State<Register> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               const Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: EdgeInsets.symmetric(vertical:20.0),
                 child: Text(
                   "Register",
                   style: TextStyle(
-                      color: AppColors.whiteColor,
+                      color: Colors.black45,
                       fontSize: 25,
                       fontWeight: FontWeight.bold),
                 ),
@@ -232,11 +232,7 @@ class _RegisterState extends State<Register> {
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
-                        side: const BorderSide(
-                            width: 1, // the thickness
-                            color:
-                                AppColors.whiteColor // the color of the border
-                            )),
+                        ),
                     onPressed: register,
                     child: const Text(
                       "Register",
@@ -273,7 +269,7 @@ class _RegisterState extends State<Register> {
                       child: const Text(
                         "Login",
                         style: TextStyle(
-                            color: AppColors.whiteColor, fontSize: 18),
+                            color: AppColors.primaryColor, fontSize: 18),
                       ),
                     ),
                   ],

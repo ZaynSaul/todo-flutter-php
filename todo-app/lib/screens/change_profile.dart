@@ -1,10 +1,20 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
+import 'package:todo/services/global_services.dart';
+import 'package:todo/services/upload_profile.dart';
+
 import 'package:todo/ui/app_colors.dart';
 
 class ChangeProfile extends StatefulWidget {
   final String name;
   final String email;
   final String password;
+  final String profile;
   final String userId;
   final index;
 
@@ -13,6 +23,7 @@ class ChangeProfile extends StatefulWidget {
       required this.name,
       required this.email,
       required this.password,
+      required this.profile,
       required this.userId,
       this.index});
 
@@ -21,6 +32,50 @@ class ChangeProfile extends StatefulWidget {
 }
 
 class _ChangeProfileState extends State<ChangeProfile> {
+  File? selectedImage;
+  String? imageData;
+  String? profileName;
+
+  final ImagePicker _imagePicker = ImagePicker();
+  //Gallery
+  Future _pickImageFromGallery() async {
+    final XFile? returnImage =
+        await _imagePicker.pickImage(source: ImageSource.gallery);
+    if (returnImage != null) {
+      setState(() {
+        selectedImage = File(returnImage.path);
+        imageData = base64Encode(selectedImage!.readAsBytesSync());
+        profileName = returnImage.path.split('/').last;
+      });
+    }
+    Navigator.of(context).pop(); //close the model sheet
+  }
+
+  //Camera
+  Future _pickImageFromCamera() async {
+    final XFile? photo =
+        await _imagePicker.pickImage(source: ImageSource.camera);
+    if (photo != null) {
+      setState(() {
+        selectedImage = File(photo.path);
+        imageData = base64Encode(selectedImage!.readAsBytesSync());
+        profileName = photo.path.split('/').last;
+      });
+    }
+    Navigator.of(context).pop();
+  }
+
+  uploadProfile() async {
+    http.Response response =
+        await UploadProfile.upload(profileName, imageData, widget.userId);
+
+    if (response.statusCode == 200) {
+      showSuccessMessage(context, "Profile uploaded successfully");
+    } else {
+      errorSnackBar(context, "Something went wrong!");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,6 +99,20 @@ class _ChangeProfileState extends State<ChangeProfile> {
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  Container(
+                    margin:
+                        const EdgeInsets.only(bottom: 20, left: 15, right: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        InkWell(
+                            onTap: uploadProfile,
+                            child: const Text("Done",
+                                style: TextStyle(
+                                    color: Colors.black45, fontSize: 18))),
+                      ],
+                    ),
+                  ),
                   Stack(
                     children: [
                       Container(
@@ -53,14 +122,30 @@ class _ChangeProfileState extends State<ChangeProfile> {
                                   width: 1,
                                   style: BorderStyle.solid),
                               borderRadius: BorderRadius.circular(100.00)),
-                          child: ClipRRect(
-                              borderRadius: BorderRadius.circular(100.0),
-                              child: Image.asset(
-                                "assets/images/profile.jpg",
-                                width: 200,
-                                height: 200,
-                                fit: BoxFit.fill,
-                              ))),
+                          child: selectedImage != null
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(100.0),
+                                  child: Image.file(
+                                    selectedImage!,
+                                    width: 200,
+                                    height: 200,
+                                    fit: BoxFit.fill,
+                                  ))
+                              : ClipRRect(
+                                  borderRadius: BorderRadius.circular(100.0),
+                                  child: widget.profile.isEmpty
+                                      ? Image.asset(
+                                          "assets/images/profile.jpg",
+                                          width: 200,
+                                          height: 200,
+                                          fit: BoxFit.cover,
+                                        )
+                                      : Image.network(
+                                          profileBaseURL + widget.profile,
+                                          width: 200,
+                                          height: 200,
+                                          fit: BoxFit.cover,
+                                        ))),
                       Positioned(
                         bottom: 4,
                         right: 20,
@@ -95,6 +180,7 @@ class _ChangeProfileState extends State<ChangeProfile> {
                           leading: const Icon(
                             Icons.account_circle,
                             color: Colors.black45,
+                            size: 30,
                           ),
                           title: const Text(
                             "Name",
@@ -144,11 +230,11 @@ class _ChangeProfileState extends State<ChangeProfile> {
                   height: MediaQuery.of(context).size.height / 4,
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         const Text("Profile photo",
-                            style: TextStyle(
-                                color: Colors.black45, fontSize: 20)),
+                            style:
+                                TextStyle(color: Colors.black45, fontSize: 20)),
                         const SizedBox(height: 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -186,7 +272,7 @@ class _ChangeProfileState extends State<ChangeProfile> {
             borderRadius: BorderRadius.all(Radius.circular(10))),
         child: Center(
           child: IconButton(
-              onPressed: () {},
+              onPressed: _pickImageFromCamera,
               icon: const Icon(Icons.camera_alt_outlined,
                   color: AppColors.whiteColor, size: 35)),
         ));
@@ -201,7 +287,7 @@ class _ChangeProfileState extends State<ChangeProfile> {
             borderRadius: BorderRadius.all(Radius.circular(10))),
         child: Center(
           child: IconButton(
-              onPressed: () {},
+              onPressed: _pickImageFromGallery,
               icon: const Icon(Icons.photo,
                   color: AppColors.whiteColor, size: 35)),
         ));

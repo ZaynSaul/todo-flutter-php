@@ -15,6 +15,7 @@ class UpdateTodo extends StatefulWidget {
   final String name;
   final String email;
   final String password;
+  final String profile;
   final String userId;
   final index;
 
@@ -25,6 +26,7 @@ class UpdateTodo extends StatefulWidget {
       required this.name,
       required this.email,
       required this.password,
+      required this.profile,
       required this.userId,
       this.index});
 
@@ -45,16 +47,7 @@ class _UpdateTodoState extends State<UpdateTodo> {
           await TodoServices.update(widget.todoId, titleController.text);
 
       if (response.statusCode == 200) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => HomeScreen(
-                name: widget.name,
-                email: widget.email,
-                password: widget.password,
-                userId: widget.userId),
-          ),
-        );
+        navigateToTodoHome();
 
         Fluttertoast.showToast(
             msg: "Todo updated successfully",
@@ -84,12 +77,7 @@ class _UpdateTodoState extends State<UpdateTodo> {
       backgroundColor: AppColors.secondaryColor,
       appBar: AppBar(
         leading: ElevatedButton(
-          onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => HomeScreen(
-                  name: widget.name,
-                  email: widget.email,
-                  password: widget.password,
-                  userId: widget.userId))),
+          onPressed: () => navigateToTodoHome(),
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.secondaryColor,
             minimumSize: const Size(40, 40),
@@ -179,5 +167,20 @@ class _UpdateTodoState extends State<UpdateTodo> {
         ),
       ),
     );
+  }
+
+  void  navigateToTodoHome(){
+    final route = MaterialPageRoute(
+            builder: (context) => HomeScreen(
+                name: widget.name,
+                email: widget.email,
+                password: widget.password,
+                profile: widget.profile,
+                userId: widget.userId));
+    Navigator.push(
+          context,
+          route
+          
+        );
   }
 }

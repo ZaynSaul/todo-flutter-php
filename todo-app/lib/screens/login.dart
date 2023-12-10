@@ -26,15 +26,7 @@ class _LoginState extends State<Login> {
 
   login() async {
     if (formKey.currentState!.validate()) {
-      // showDialog(
-      //     context: context,
-      //     builder: (context) {
-      //       return const Center(
-      //         child: CircularProgressIndicator(
-      //           color: AppColors.primaryColor,
-      //         ),
-      //       );
-      //     });
+      
       http.Response response =
           await AuthServices.login(email.text, password.text);
 
@@ -51,6 +43,7 @@ class _LoginState extends State<Login> {
                   name: userData['name'],
                   email: userData['email'],
                   password: userData['password'],
+                  profile: userData['profile'],
                   userId: userData['id']),
             ),
           );
@@ -74,10 +67,10 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primaryColor,
+      backgroundColor: AppColors.secondaryColor,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: AppColors.primaryColor,
+        backgroundColor: AppColors.secondaryColor,
         iconTheme: const IconThemeData(color: AppColors.whiteColor),
         elevation: 0,
       ),
@@ -88,11 +81,11 @@ class _LoginState extends State<Login> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               const Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: EdgeInsets.symmetric(vertical:20.0),
                 child: Text(
                   "Login",
                   style: TextStyle(
-                      color: AppColors.whiteColor,
+                      color: Colors.black45,
                       fontSize: 25,
                       fontWeight: FontWeight.bold),
                 ),
@@ -199,11 +192,7 @@ class _LoginState extends State<Login> {
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
-                          side: const BorderSide(
-                              width: 1, // the thickness
-                              color: AppColors
-                                  .whiteColor // the color of the border
-                              )),
+                          ),
                       child: const Text(
                         "Login",
                         style: TextStyle(
@@ -241,7 +230,7 @@ class _LoginState extends State<Login> {
                       child: const Text(
                         "Register",
                         style: TextStyle(
-                            color: AppColors.whiteColor, fontSize: 18),
+                            color: AppColors.primaryColor, fontSize: 18),
                       ),
                     ),
                   ],

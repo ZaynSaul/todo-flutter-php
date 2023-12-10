@@ -44,7 +44,18 @@ class TodoServices
       "id": id
      };
 
-     var url = Uri.parse("${baseURL}delete_todo.php");
+     var url = Uri.parse("${baseURL}delete_lists.php");
+     http.Response response = await http.post(url, body: data);
+
+     return response;
+  }
+
+  static Future deleteMultipleLists (String id) async {
+     var data = {
+      "id": id
+     };
+
+     var url = Uri.parse("${baseURL}delete_multiple_lists.php");
      http.Response response = await http.post(url, body: data);
 
      return response;

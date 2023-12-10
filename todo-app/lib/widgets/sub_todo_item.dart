@@ -1,8 +1,7 @@
 // ignore_for_file: prefer_typing_uninitialized_variables, use_build_context_synchronously
 
-
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:http/http.dart' as http;
 import 'package:todo/screens/todo_list.dart';
 import 'package:todo/screens/update_todo_item.dart';
@@ -20,6 +19,7 @@ class SubTodoItem extends StatefulWidget {
   final String name;
   final String email;
   final String password;
+  final String profile;
   final String userId;
   final String todoId;
   final String todoTitle;
@@ -33,6 +33,7 @@ class SubTodoItem extends StatefulWidget {
       required this.name,
       required this.email,
       required this.password,
+      required this.profile,
       required this.userId,
       required this.todoId,
       required this.todoTitle,
@@ -43,19 +44,14 @@ class SubTodoItem extends StatefulWidget {
 }
 
 class _SubTodoItemState extends State<SubTodoItem> {
-  delete() async {
-    http.Response response = await TodoItemServices.delete(widget.id);
+  delete(String id) async {
+    http.Response response = await TodoItemServices.delete(id);
 
     if (response.statusCode == 200) {
       navigateToTodoItem();
-      Fluttertoast.showToast(
-          msg: "Todo deleted successfully!!",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.TOP,
-          timeInSecForIosWeb: 3,
-          backgroundColor: Colors.green,
-          textColor: Colors.white,
-          fontSize: 20.0);
+      showSuccessMessage(context, "Todo item deleted successfully");
+    }else{
+      errorSnackBar(context, "Something went wrong!");
     }
   }
 
@@ -65,17 +61,12 @@ class _SubTodoItemState extends State<SubTodoItem> {
     if (response.statusCode == 200) {
       navigateToTodoItem();
       if (isDone == "1") {
-        Fluttertoast.showToast(
-            msg: "Todo item completed!!",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.TOP,
-            timeInSecForIosWeb: 3,
-            backgroundColor: Colors.green,
-            textColor: Colors.white,
-            fontSize: 20.0);
+        showSuccessMessage(context, "Todo item is completed successfully");
       } else {
         showCancelMessage(context, "Todo item not completed");
       }
+    }else{
+      errorSnackBar(context, "Something went wrong!");
     }
   }
 
@@ -85,90 +76,93 @@ class _SubTodoItemState extends State<SubTodoItem> {
       margin: const EdgeInsets.only(
         bottom: 20,
       ),
-      child: ListTile(
-        onTap: () {
-          navigateToUpdateTodoItem();
-        },
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-        tileColor: AppColors.whiteColor,
-        leading: Container(
-          padding: const EdgeInsets.all(0),
-          margin: const EdgeInsets.symmetric(vertical: 12),
-          width: 30,
-          height: 30,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: IconButton(
-            onPressed: () {
-              if (widget.isDone == "1") {
-                done('0');
-              } else {
-                done('1');
-              }
-            },
-            color: AppColors.primaryColor,
-            icon: widget.isDone == "1"
-                ? const Icon(Icons.check_box)
-                : const Icon(Icons.check_box_outline_blank),
-            iconSize: 18,
-          ),
-        ),
-        title: Row(
+      child: Slidable(
+        key: ValueKey(widget.id),
+        startActionPane: ActionPane(
+          // A motion is a widget used to control how the pane animates.
+          motion: const StretchMotion(),
+
+          // A pane can dismiss the Slidable.
+          
+
+          // All actions are defined in the children parameter.
           children: [
-            Text(
-              widget.title,
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
-                  decoration:
-                      widget.isDone == "1" ? TextDecoration.lineThrough : null),
+            SlidableAction(
+              onPressed: (context) => editTodoItem(),
+              backgroundColor: const Color(0xFF21B7CA),
+              foregroundColor: Colors.white,
+              icon: Icons.edit,
             ),
-            const Icon(Icons.edit, size: 20),
           ],
         ),
-        trailing: Container(
-          padding: const EdgeInsets.all(0),
-          margin: const EdgeInsets.symmetric(vertical: 12),
-          width: 35,
-          height: 35,
-          decoration: BoxDecoration(
-            color: Colors.red,
-            borderRadius: BorderRadius.circular(5),
+        endActionPane: ActionPane(
+          motion: const BehindMotion(),
+          dismissible: DismissiblePane(onDismissed: () {
+            delete(widget.id);
+          }),
+          children: [
+            SlidableAction(
+              onPressed: (context) => _onDismissed(),
+              backgroundColor: const Color(0xFFFE4A49),
+              foregroundColor: Colors.white,
+              icon: Icons.delete,
+            ),
+          ],
+        ),
+        child: ListTile(
+        
+          tileColor: AppColors.whiteColor,
+          leading: Container(
+            padding: const EdgeInsets.all(0),
+            width: 30,
+          height: 30,
+            child: IconButton(
+              onPressed: () {
+                if (widget.isDone == "1") {
+                  done('0');
+                } else {
+                  done('1');
+                }
+              },
+              color: AppColors.primaryColor,
+              icon: widget.isDone == "1"
+                  ? const Icon(Icons.circle_rounded)
+                  : const Icon(Icons.circle_outlined, ),
+              iconSize: 20,
+            ),
           ),
-          child: IconButton(
-            onPressed: () {
-              showDialog(
-                context: (context),
-                builder: (context) => AlertDialog(
-                  title: const Text('Message'),
-                  content: const Text(
-                    'Are you sure you want to delete this todo item?',
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontSize: 18,
-                    ),
-                  ),
-                  actions: <Widget>[
-                    cancel(),
-                    deleteConfirmation(),
-                  ],
-                ),
-              );
-            },
-            color: AppColors.whiteColor,
-            icon: const Icon(Icons.delete),
-            iconSize: 18,
+          title: Row(
+            children: [
+              Text(
+                widget.title,
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black,
+                    decoration: widget.isDone == "1"
+                        ? TextDecoration.lineThrough
+                        : null),
+              ),
+            ],
+          ),
+          trailing: Container(
+            padding: const EdgeInsets.all(0),
+            child: widget.isDone == "1"
+                ? const Icon(
+                    Icons.check_rounded,
+                    size: 24,
+                    color: Colors.green,
+                  )
+                : const Text(""),
           ),
         ),
       ),
     );
   }
 
+  void _onDismissed() {
+    delete(widget.id);
+  }
 
   void navigateToTodoItem() {
     final route = MaterialPageRoute(
@@ -178,13 +172,14 @@ class _SubTodoItemState extends State<SubTodoItem> {
           name: widget.name,
           email: widget.email,
           password: widget.password,
+           profile: widget.profile,
           userId: widget.userId),
     );
     Navigator.push(context, route);
     // Navigator.pop(context);
   }
 
-  void navigateToUpdateTodoItem() {
+  void editTodoItem() {
     final route = MaterialPageRoute(
         builder: (context) => UpdateTodoItem(
             todoId: widget.todoId,
@@ -195,45 +190,11 @@ class _SubTodoItemState extends State<SubTodoItem> {
             name: widget.name,
             email: widget.email,
             password: widget.password,
+             profile: widget.profile,
             userId: widget.userId,
             index: widget.index));
     Navigator.push(context, route);
   }
 
-  Widget cancel() {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.red,
-          padding: const EdgeInsets.all(10.0),
-          textStyle: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-          )),
-      onPressed: () {
-        Navigator.pop(context);
-        setState(() {});
-      },
-      child: const Text(
-        "Cancel",
-        style: TextStyle(color: Colors.white, fontSize: 16),
-      ),
-    );
-  }
-
-  Widget deleteConfirmation() {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.green,
-          padding: const EdgeInsets.all(10.0),
-          textStyle: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-          )),
-      onPressed: delete,
-      child: const Text(
-        "Yes, delete",
-        style: TextStyle(color: Colors.white, fontSize: 16),
-      ),
-    );
-  }
+ 
 }

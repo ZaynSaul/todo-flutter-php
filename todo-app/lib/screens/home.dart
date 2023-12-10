@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:todo/drawer/navigationdrawer.dart';
 import 'package:todo/screens/settings.dart';
+import 'package:todo/services/global_services.dart';
 import 'package:todo/services/todo_service.dart';
 import 'package:todo/ui/app_colors.dart';
 import 'package:todo/widgets/add_todo.dart';
@@ -15,6 +16,7 @@ class HomeScreen extends StatefulWidget {
   final String name;
   final String email;
   final String password;
+  final String profile;
   final String userId;
 
   const HomeScreen(
@@ -22,6 +24,7 @@ class HomeScreen extends StatefulWidget {
       required this.name,
       required this.email,
       required this.password,
+      required this.profile,
       required this.userId});
 
   @override
@@ -129,10 +132,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       borderRadius: BorderRadius.circular(25.00)),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(25.0),
-                    child: Image.asset(
+                    child: widget.profile.isEmpty ? Image.asset(
                       "assets/images/profile.jpg",
                       fit: BoxFit.cover,
-                    ),
+                    ) : Image.network(profileBaseURL+widget.profile, fit: BoxFit.cover,),
                   ),
                 ),
               ),
@@ -146,6 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
         name: widget.name,
         email: widget.email,
         password: widget.password,
+        profile: widget.profile,
         userId: widget.userId,
       ),
       body: _isLoading
@@ -163,13 +167,14 @@ class _HomeScreenState extends State<HomeScreen> {
                             Container(
                               margin: const EdgeInsets.only(
                                 top: 10,
-                                bottom: 10,
+                                bottom: 20,
                               ),
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 10),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
                                   const Expanded(
                                     child: Text(
@@ -181,15 +186,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                   ),
                                   Container(
+                                    alignment: Alignment.center,
                                     padding: const EdgeInsets.all(0),
-                                    margin: const EdgeInsets.symmetric(
-                                        vertical: 12),
-                                    width: 40,
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                    child: IconButton(
+                                    
+                                    child: Center(
+                                      child: IconButton(
+                                        alignment: Alignment.center,
                                       onPressed: () {
                                         showDialog(
                                           context: (context),
@@ -200,7 +202,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                               style: TextStyle(
                                                 color: AppColors.primaryColor,
                                                 fontSize: 18,
-                                                fontWeight: FontWeight.w600,
+                                                fontWeight: FontWeight.w500,
                                               ),
                                             ),
                                             actions: <Widget>[
@@ -210,9 +212,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ),
                                         );
                                       },
+                                      mouseCursor: MouseCursor.defer,
                                       color: Colors.black87,
-                                      icon: const Icon(Icons.more_horiz),
-                                      iconSize: 25,
+                                      icon: const Icon(Icons.more_horiz_rounded),
+                                      iconSize: 28,
+                                    ),
                                     ),
                                   ),
                                 ],
@@ -229,6 +233,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       name: widget.name,
                                       email: widget.email,
                                       password: widget.password,
+                                      profile: widget.profile,
                                       userId: widget.userId,
                                       index: index,
                                     );
@@ -288,6 +293,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     name: widget.name,
                     email: widget.email,
                     password: widget.password,
+                    profile: widget.profile,
                     userId: widget.userId,
                   ),
                 ],
@@ -312,7 +318,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   "assets/images/No_Task_List.png",
                   fit: BoxFit.cover,
                 )),
-            const Text("No To Do Lists", style: TextStyle(fontSize: 20)),
+            const Text("No todo list", style: TextStyle(fontSize: 20)),
           ],
         ),
       ),
@@ -402,6 +408,7 @@ class _HomeScreenState extends State<HomeScreen> {
           name: widget.name,
           email: widget.email,
           password: widget.password,
+          profile: widget.profile,
           userId: widget.userId),
     );
     Navigator.push(context, route);

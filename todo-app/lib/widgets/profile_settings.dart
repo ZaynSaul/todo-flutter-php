@@ -7,6 +7,7 @@ class ProfileSettings extends StatefulWidget {
   final String name;
   final String email;
   final String password;
+  final String profile;
   final String userId;
   final index;
   const ProfileSettings(
@@ -15,6 +16,7 @@ class ProfileSettings extends StatefulWidget {
       required this.name,
       required this.email,
       required this.password,
+      required this.profile,
       required this.userId,
       this.index});
   @override
@@ -38,6 +40,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                         name: widget.name,
                         email: widget.email,
                         password: widget.password,
+                        profile: widget.profile,
                         userId: widget.userId)));
           },
           leading: const Icon(

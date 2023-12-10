@@ -9,12 +9,14 @@ class Settings extends StatefulWidget {
   final String name;
   final String email;
   final String password;
+  final String profile;
   final String userId;
   const Settings(
       {super.key,
       required this.name,
       required this.email,
       required this.password,
+      required this.profile,
       required this.userId});
 
   @override
@@ -35,12 +37,7 @@ class _SettingsState extends State<Settings> {
             minimumSize: const Size(40, 40),
             elevation: 0,
           ),
-          onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => HomeScreen(
-                  name: widget.name,
-                  email: widget.email,
-                  password: widget.password,
-                  userId: widget.userId))),
+          onPressed: () => navigateToTodoHome(),
           child: const Icon(
             Icons.arrow_back,
             color: AppColors.primaryColor,
@@ -61,7 +58,7 @@ class _SettingsState extends State<Settings> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            ProfileCard(name: widget.name),
+            ProfileCard(name: widget.name, profile: widget.profile,),
             const SizedBox(
               height: 20,
             ),
@@ -79,6 +76,7 @@ class _SettingsState extends State<Settings> {
                       name: widget.name,
                       email: widget.email,
                       password: widget.password,
+                      profile: widget.profile,
                       userId: widget.userId),
                   const SizedBox(height: 20),
                   PasswordSettings(
@@ -90,5 +88,20 @@ class _SettingsState extends State<Settings> {
         ),
       ),
     );
+  }
+
+   void  navigateToTodoHome(){
+    final route = MaterialPageRoute(
+            builder: (context) => HomeScreen(
+                name: widget.name,
+                email: widget.email,
+                password: widget.password,
+                profile: widget.profile,
+                userId: widget.userId));
+    Navigator.push(
+          context,
+          route
+          
+        );
   }
 }

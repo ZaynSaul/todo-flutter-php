@@ -16,6 +16,7 @@ class TodoList extends StatefulWidget {
   final String name;
   final String email;
   final String password;
+  final String profile;
   final String userId;
 
   const TodoList(
@@ -25,6 +26,7 @@ class TodoList extends StatefulWidget {
       required this.name,
       required this.email,
       required this.password,
+      required this.profile,
       required this.userId});
 
   @override
@@ -157,6 +159,7 @@ class _TodoListState extends State<TodoList> {
                                     name: widget.name,
                                     email: widget.email,
                                     password: widget.password,
+                                    profile: widget.profile,
                                     userId: widget.userId,
                                     todoId: widget.todoId,
                                     todoTitle: widget.title,
@@ -219,6 +222,7 @@ class _TodoListState extends State<TodoList> {
                       name: widget.name,
                       email: widget.email,
                       password: widget.password,
+                      profile: widget.profile,
                       userId: widget.userId),
                 ],
               ),
@@ -257,6 +261,7 @@ class _TodoListState extends State<TodoList> {
             name: widget.name,
             email: widget.email,
             password: widget.password,
+            profile: widget.profile,
             userId: widget.userId));
     Navigator.push(context, route);
   }
@@ -313,6 +318,7 @@ class _TodoListState extends State<TodoList> {
                 name: widget.name,
                 email: widget.email,
                 password: widget.password,
+                profile: widget.profile,
                 userId: widget.userId))),
         child: const Icon(
           Icons.arrow_back,

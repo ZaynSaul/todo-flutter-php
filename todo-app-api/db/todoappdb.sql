@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 03, 2023 at 12:43 PM
+-- Generation Time: Dec 10, 2023 at 01:48 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -43,9 +43,10 @@ INSERT INTO `todo` (`id`, `title`, `user_id`, `is_done`) VALUES
 (2, 'Add backend to app', 1, 1),
 (3, 'Deploying app', 1, 0),
 (4, 'This is the forth todo', 1, 1),
-(5, 'Newweb app', 1, 1),
+(5, 'New web app', 1, 1),
 (6, 'Another project', 1, 0),
-(8, 'This is another todo.', 1, 0);
+(8, 'This is another todo.', 1, 0),
+(9, 'This is awesome list.', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -66,8 +67,9 @@ CREATE TABLE `todo_item` (
 --
 
 INSERT INTO `todo_item` (`id`, `title`, `description`, `todo_id`, `is_done`) VALUES
-(4, 'First item', 'This is first item', 2, 0),
-(5, 'First of forth todo', 'This is for the forth todo', 4, 1);
+(6, 'Another first list item', 'This is for another first list item.', 6, 0),
+(7, 'Fix bugs', 'This is to fix bugs the deploy.', 3, 1),
+(8, 'Deployed to domain', 'This have been deployed successfully.', 3, 0);
 
 -- --------------------------------------------------------
 
@@ -88,7 +90,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `profile`) VALUES
-(1, 'Saul Zayn', 'admin@admin.com', '$2y$10$5O8ks4UcqPSfs3Z/MMKSbu644.5quKLHm7P3hqkdJQvY3bF5b1vgK', 'profile.jpg');
+(1, 'Saul Zayn', 'admin@admin.com', '$2y$10$5O8ks4UcqPSfs3Z/MMKSbu644.5quKLHm7P3hqkdJQvY3bF5b1vgK', '../uploads/IMG_20231209_205609.jpg');
 
 --
 -- Indexes for dumped tables
@@ -122,13 +124,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `todo`
 --
 ALTER TABLE `todo`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `todo_item`
 --
 ALTER TABLE `todo_item`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `users`
