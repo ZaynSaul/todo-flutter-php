@@ -16,12 +16,13 @@ class App extends StatelessWidget {
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark,
         statusBarBrightness: Brightness.light,
+        
       )
     );
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Todo App',
-      theme: ThemeData(colorScheme: const ColorScheme.light(), fontFamily: 'Nunito'),
+      theme: ThemeData(colorScheme: const ColorScheme.light(), fontFamily: 'Nunito', useMaterial3: true,),
       home: const SplashScreen(),
     );
   }

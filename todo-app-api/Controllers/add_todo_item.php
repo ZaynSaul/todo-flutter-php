@@ -5,8 +5,8 @@ require_once '../Config/server.php';
 header("Access-Control-Allow-Origin: *");
 try {
     $obj = new Server();
-    $title = $_POST['title'];
-    $description = $_POST['description'];
+    $title = ucfirst(trim($_POST['title']));
+    $description = trim($_POST['description']);
     $todo_id = $_POST['todo_id'];
 
     $t_id = (int)$todo_id;

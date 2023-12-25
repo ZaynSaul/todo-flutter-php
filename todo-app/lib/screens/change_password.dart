@@ -133,7 +133,7 @@ class _ChangePasswordState extends State<ChangePassword> {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Container(
+                child: SizedBox(
                   height: 60,
                   width: double.infinity,
                   child: ElevatedButton(

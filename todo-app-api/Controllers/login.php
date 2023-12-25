@@ -7,7 +7,7 @@ header("Access-Control-Allow-Origin: *");
 $obj = new Server();
 
 
-$email = $_POST['email'];
+$email = strtolower($_POST['email']);
 $password = $_POST['password'];
 
 $sql = "SELECT * FROM users WHERE email = '" . $email . "'";

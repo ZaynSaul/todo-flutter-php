@@ -4,7 +4,7 @@ header("Access-Control-Allow-Origin: *");
 try {
     $obj = new Server();
 
-    $title = $_POST['title'];
+    $title = ucfirst(trim($_POST['title']));
     $id = $_POST['id'];
 
     $todo_id = (int)$id;

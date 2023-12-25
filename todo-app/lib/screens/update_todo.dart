@@ -143,7 +143,7 @@ class _UpdateTodoState extends State<UpdateTodo> {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Container(
+                child: SizedBox(
                   height: 60,
                   width: double.infinity,
                   child: ElevatedButton(

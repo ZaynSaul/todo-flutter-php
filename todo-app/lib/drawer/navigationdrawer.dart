@@ -30,13 +30,13 @@ class _DrawerNavigationState extends State<DrawerNavigation> {
   Widget build(BuildContext context) {
     return Container(
       child: Drawer(
-        backgroundColor: AppColors.whiteColor,
+        backgroundColor: AppColors.secondaryColor,
         child: ListView(
           children: <Widget>[
             UserAccountsDrawerHeader(
               currentAccountPicture: CircleAvatar(
                 backgroundColor: AppColors.whiteColor,
-                child: Container(
+                child: SizedBox(
                     height: 100,
                     width: 100,
                     child: ClipRRect(

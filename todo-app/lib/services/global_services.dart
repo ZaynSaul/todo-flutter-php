@@ -3,7 +3,8 @@ import "package:todo/ui/app_colors.dart";
 
 var baseURL = "http://192.168.137.55/todo-app-api/Controllers/";
 var profileBaseURL = "http://192.168.137.55/todo-app-api/uploads/";
-// const String baseURL = "http://192.168.100.5/todo-app-api/Controllers/";
+// var profileBaseURL = "http://192.168.100.6/todo-app-api/uploads/";
+// const String baseURL = "http://192.168.100.6/todo-app-api/Controllers/";
 var headers = {"Accept": "application/json"};
 
 errorSnackBar(BuildContext context, String message) {

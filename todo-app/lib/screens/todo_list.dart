@@ -56,10 +56,7 @@ class _TodoListState extends State<TodoList> {
     http.Response response = await TodoItemServices.deleteCompleted(id);
 
     if (response.statusCode == 200) {
-      var todoItemData = json.decode(response.body);
-      if(todoItemData == "ERROR"){
-        errorSnackBar(context, "Failed to delete try again!");
-      }
+      
       Navigator.of(context).pop(context);
       showSuccessMessage(context, "Todo items deleted successfully");
       setState(() {
@@ -261,7 +258,7 @@ class _TodoListState extends State<TodoList> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
+            SizedBox(
                 height: 300,
                 width: 300,
                 child: Image.asset(

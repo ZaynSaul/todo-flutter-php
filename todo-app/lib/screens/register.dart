@@ -12,7 +12,7 @@ import 'package:todo/services/global_services.dart';
 import 'package:todo/ui/app_colors.dart';
 
 class Register extends StatefulWidget {
-  const Register({Key? key}) : super(key: key);
+  const Register({super.key});
 
   @override
   _RegisterState createState() => _RegisterState();
@@ -24,7 +24,7 @@ class _RegisterState extends State<Register> {
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   bool obserText = true;
-
+ 
   register() async {
     if (formKey.currentState!.validate()) {
       http.Response response =
@@ -221,7 +221,7 @@ class _RegisterState extends State<Register> {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Container(
+                child: SizedBox(
                   height: 60,
                   width: double.infinity,
                   child: ElevatedButton(

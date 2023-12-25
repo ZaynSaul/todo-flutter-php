@@ -15,13 +15,35 @@ class TodoServices
 
      return response;
   }
+ 
+  static Future view (String? query, String userId) async {
+    var data = {};
 
-  static Future view (String userId) async {
-     var data = {
+    if(query != null){
+      data = {
+      "title": query,
       "user_id": userId
      };
+    }else {
+
+      data = {
+      "user_id": userId
+     };
+    }
 
      var url = Uri.parse("${baseURL}show_todo.php");
+     http.Response response = await http.post(url, body: data);
+
+     return response;
+  }
+
+  static Future search (String? query, String userId) async {
+     var data = {
+      "title": query,
+      "user_id": userId,
+     };
+
+     var url = Uri.parse("${baseURL}search_todo_list.php");
      http.Response response = await http.post(url, body: data);
 
      return response;

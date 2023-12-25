@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:todo/screens/settings.dart';
 import 'package:todo/services/global_services.dart';
 import 'package:todo/services/upload_profile.dart';
 
@@ -70,6 +71,7 @@ class _ChangeProfileState extends State<ChangeProfile> {
         await UploadProfile.upload(profileName, imageData, widget.userId);
 
     if (response.statusCode == 200) {
+      profileSettings();
       showSuccessMessage(context, "Profile uploaded successfully");
     } else {
       errorSnackBar(context, "Something went wrong!");
@@ -291,5 +293,17 @@ class _ChangeProfileState extends State<ChangeProfile> {
               icon: const Icon(Icons.photo,
                   color: AppColors.whiteColor, size: 35)),
         ));
+  }
+
+  void profileSettings() {
+    final route = MaterialPageRoute(
+      builder: (context) => Settings(
+          name: widget.name,
+          email: widget.email,
+          password: widget.password,
+          profile: widget.profile,
+          userId: widget.userId),
+    );
+    Navigator.push(context, route);
   }
 }

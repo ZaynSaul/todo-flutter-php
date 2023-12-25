@@ -12,7 +12,7 @@ import 'package:todo/services/global_services.dart';
 import 'package:todo/ui/app_colors.dart';
 
 class Login extends StatefulWidget {
-  const Login({Key? key}) : super(key: key);
+  const Login({super.key});
 
   @override
   _LoginState createState() => _LoginState();
@@ -181,7 +181,7 @@ class _LoginState extends State<Login> {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Container(
+                child: SizedBox(
                   height: 60,
                   width: double.infinity,
                   child: ElevatedButton(

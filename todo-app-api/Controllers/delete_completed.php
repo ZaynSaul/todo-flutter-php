@@ -17,8 +17,6 @@ try {
 
     if ($count > 0) {
         $obj->connection()->query("DELETE FROM todo_item  WHERE todo_id = '" . $id . "' AND is_done = 1 ");
-    }else {
-        echo json_encode("ERROR");
     }
 } catch (Exception $e) {
     echo json_encode("FAILED");

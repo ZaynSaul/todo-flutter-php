@@ -6,8 +6,8 @@ try {
     $obj = new Server();
 
     $id = (int)$_POST['id'];
-    $title = $_POST['title'];
-    $description = $_POST['description'];
+    $title = ucfirst(trim($_POST['title']));
+    $description = ucfirst(trim($_POST['description']));
 
     $obj->connection()->query("UPDATE todo_item SET title='" . $title . "', description= '" . $description . "' WHERE id = '" . $id . "' ");
 } catch (Exception $e) {

@@ -32,13 +32,17 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool _showSearch = false;
+  TextEditingController query = TextEditingController();
+
   late bool _isLoading = false;
   List todoListData = [];
+
   showAllTodos() async {
-    http.Response response = await TodoServices.view(widget.userId);
+    http.Response response = await TodoServices.view(query.text, widget.userId);
+
     if (response.statusCode == 200) {
       var jsonData = json.decode(response.body);
+
       setState(() {
         todoListData = jsonData;
       });
@@ -55,9 +59,8 @@ class _HomeScreenState extends State<HomeScreen> {
         _isLoading = false;
       });
     });
-    _showSearch = false;
-    super.initState();
     showAllTodos();
+    super.initState();
   }
 
   @override
@@ -67,81 +70,42 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         backgroundColor: AppColors.secondaryColor,
         iconTheme: const IconThemeData(color: AppColors.primaryColor),
-        title:
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          const Text(
+        title:const Text(
             "Todos",
             style: TextStyle(
               color: Colors.black87,
               fontSize: 24,
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Container(
-                height: 40,
-                width: 40,
-                decoration: BoxDecoration(
-                    color: AppColors.whiteColor,
-                    borderRadius: BorderRadius.circular(20.00)),
-                child: Center(
-                  child: GestureDetector(
-                      onTap: () {},
-                      child: Badge.count(
-                          count: 3,
-                          backgroundColor: Colors.red,
-                          child: const Icon(Icons.notifications,
-                              color: AppColors.primaryColor, size: 24))),
-                ),
+
+         actions: [ 
+          GestureDetector(
+            onTap: () {
+              profileSettings();
+            },
+            child: Container(
+              height: 40,
+              width: 40,
+              margin: const EdgeInsets.only(right: 15),
+              decoration: BoxDecoration(
+                  border: Border.all(
+                      color: Colors.grey, width: 1, style: BorderStyle.solid),
+                  borderRadius: BorderRadius.circular(25.00)),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(25.0),
+                child: widget.profile.isEmpty
+                    ? Image.asset(
+                        "assets/images/profile.jpg",
+                        fit: BoxFit.cover,
+                      )
+                    : Image.network(
+                        profileBaseURL + widget.profile,
+                        fit: BoxFit.cover,
+                      ),
               ),
-              const SizedBox(
-                width: 10,
-              ),
-              Container(
-                height: 40,
-                width: 40,
-                decoration: BoxDecoration(
-                    color: AppColors.whiteColor,
-                    borderRadius: BorderRadius.circular(20.00)),
-                child: Center(
-                    child: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _showSearch = true;
-                          });
-                        },
-                        icon: const Icon(Icons.search_rounded,
-                            color: Colors.grey, size: 24))),
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              GestureDetector(
-                onTap: () {
-                  profileSettings();
-                },
-                child: Container(
-                  height: 40,
-                  width: 40,
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                          color: Colors.grey,
-                          width: 1,
-                          style: BorderStyle.solid),
-                      borderRadius: BorderRadius.circular(25.00)),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(25.0),
-                    child: widget.profile.isEmpty ? Image.asset(
-                      "assets/images/profile.jpg",
-                      fit: BoxFit.cover,
-                    ) : Image.network(profileBaseURL+widget.profile, fit: BoxFit.cover,),
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
-        ]),
+        ],
         centerTitle: true,
         elevation: 0,
       ),
@@ -180,7 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     child: Text(
                                       "All Lists",
                                       style: TextStyle(
-                                        fontSize: 25,
+                                        fontSize: 20,
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
@@ -188,35 +152,35 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Container(
                                     alignment: Alignment.center,
                                     padding: const EdgeInsets.all(0),
-                                    
                                     child: Center(
                                       child: IconButton(
                                         alignment: Alignment.center,
-                                      onPressed: () {
-                                        showDialog(
-                                          context: (context),
-                                          builder: (context) => AlertDialog(
-                                            title: const Text('Message'),
-                                            content: const Text(
-                                              'Delete all Lists',
-                                              style: TextStyle(
-                                                color: AppColors.primaryColor,
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.w500,
+                                        onPressed: () {
+                                          showDialog(
+                                            context: (context),
+                                            builder: (context) => AlertDialog(
+                                              title: const Text('Message'),
+                                              content: const Text(
+                                                'Delete all Lists',
+                                                style: TextStyle(
+                                                  color: AppColors.primaryColor,
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
                                               ),
+                                              actions: <Widget>[
+                                                cancel(),
+                                                deleteConfirmation(),
+                                              ],
                                             ),
-                                            actions: <Widget>[
-                                              cancel(),
-                                              deleteConfirmation(),
-                                            ],
-                                          ),
-                                        );
-                                      },
-                                      mouseCursor: MouseCursor.defer,
-                                      color: Colors.black87,
-                                      icon: const Icon(Icons.more_horiz_rounded),
-                                      iconSize: 28,
-                                    ),
+                                          );
+                                        },
+                                        mouseCursor: MouseCursor.defer,
+                                        color: Colors.black87,
+                                        icon: const Icon(
+                                            Icons.more_horiz_rounded),
+                                        iconSize: 28,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -311,7 +275,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
+            SizedBox(
                 height: 300,
                 width: 300,
                 child: Image.asset(
@@ -326,43 +290,43 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget searchBox() {
-    if (_showSearch == true) {
-      return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 15),
-        decoration: BoxDecoration(
-          color: AppColors.whiteColor,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: TextField(
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            hintText: "Search",
-            hintStyle: const TextStyle(
-              color: Colors.grey,
-            ),
-            prefixIcon: const Icon(
-              Icons.search,
-              color: AppColors.primaryColor,
-              size: 20,
-            ),
-            suffixIcon: IconButton(
-              onPressed: () {
-                setState(() {
-                  _showSearch = false;
-                });
-              },
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 15),
+      decoration: BoxDecoration(
+        color: AppColors.whiteColor,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: TextField(
+        controller: query,
+        keyboardType: TextInputType.text,
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          hintText: "Search",
+          hintStyle: const TextStyle(
+            color: Colors.grey,
+          ),
+          prefixIcon: IconButton(
+              onPressed: () => showAllTodos(),
               icon: const Icon(
-                Icons.cancel,
-                color: Colors.red,
-                size: 20,
-              ),
+                Icons.search,
+                color: AppColors.primaryColor,
+                size: 25,
+              )),
+          suffixIcon: IconButton(
+            onPressed: () {
+              setState(() {
+                query.clear();
+              });
+            },
+            icon: const Icon(
+              Icons.cancel,
+              color: Colors.grey,
+              size: 20,
             ),
           ),
         ),
-      );
-    } else {
-      return Container();
-    }
+      ),
+    );
   }
 
   Widget cancel() {
